@@ -145,14 +145,16 @@ def req_3(control):
     return req_3, tamanio, delta_t
 
 
-def req_4(control,anio):
+def req_4(control):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    req_4 = model.req_4(control["model"],anio)
-    return req_4
-
+    start_time = get_time()
+    req_4 = model.req_4(control["model"])
+    end_time = get_time()
+    delta_t = delta_time(start_time, end_time)
+    return req_4, round(delta_t, 3)
 
 def req_5(control):
     """
@@ -192,13 +194,16 @@ def req_7(control, numero , anio_in, anio_fin):
     return req_7, delta_t
 
 
-def req_8(control):
+def req_8(control, numero, anio_inicial, anio_final):
     """
     Retorna el resultado del requerimiento 8
     """
     # TODO: Modificar el requerimiento 8
-    req_8 = model.req_8(control["model"])
-    return req_8
+    start_time= get_time()
+    req_8 = model.req_8(control["model"], numero, anio_inicial, anio_final)
+    end_time = get_time() 
+    delta_t = delta_time(start_time, end_time)
+    return req_8, round (delta_t, 3) 
 
 
 # Funciones para medir tiempos de ejecucion

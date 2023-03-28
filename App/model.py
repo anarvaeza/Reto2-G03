@@ -384,71 +384,54 @@ def req_3(data_structs):
     return lista_dicts_menores_anios
         
 
-
-
-   
-    
-    
 def req_4(data_structs):
     """
     Función que soluciona el requerimiento 4
     """
-    tamanio = data_size(data_structs)
-    anios = crear_diccionario(data_structs, "data","Año", tamanio)
-    #Crea un diccionario con los los años en sus llaves
-    busca = "Costos y gastos de nomina"
-    sumatoria = lt.newList(datastructure="ARRAY_LIST")
-    #Se crea una lista donde se almacena la sumatoria de cada año
-    for fecha in anios.keys():
-        for sector in fecha["Nombre sector económico"]:
-            sumatoria = sector
-        alto = encontrar_mayor(anios[fecha], busca)
-        lt.addLast(mayor, alto)
+    nombres=lt.newList(datastructure="ARRAY_LIST")
+    filas_respuesta=lt.newList(datastructure="ARRAY_LIST")
+    for anio in data_structs.keys():
+        lista=ordenar_por_columna(data_structs[anio],"Nombre subsector económico", "Costos y gastos nómina")
+        ordenados=lista[0]
+        referencia=lista[1]
+        info_suma=buscar_mayor_suma(ordenados, referencia)
+        nombre_mayor=info_suma[0]
+        suma_mayor=info_suma[1]
         
-    
-    repeticiones = lt.size(mayor)
-    respuesta = ordenar(mayor, "Año", repeticiones, 0)
-    respuesta_filtrada = respuesta_filtrada_req4
-    
-    final = lt.iterator(respuesta_filtrada)
-    return (final)
-                
-def respuesta_filtrada_req4(respuesta):
-    respuesta_filtrada = lt.newList(datastructure="ARRAY_LIST")
-    for elem in lt.iterator(respuesta):
-        dic = {
-            "Año": elem["Año"],
-            "Código sector económico": elem["Código Sector Económico"],
-            "Nombre sector económico": elem["Nombre Sector Económico"],
-            "Código subsector económico": elem["Código Subsector Económico"],
-            "Nombre subsector económico": elem["Nombre Subsector Económico"],
-            """• Año.
-• Código sector económico.
-• Nombre sector económico.
-• Código subsector económico.
-• Nombre subsector económico.
-• El total de costos y gastos nómina del subsector económico.
-• El total ingresos netos del subsector económico.
-• El total costos y gastos del subsector económico.
-• El total saldo por pagar del subsector económico.
-• El total saldo a favor del subsector económico.
-• Las tres actividades económicas que menos aportaron y las tres actividades económicas que más
-aportaron al valor total de costos y gastos de nómina en cada año, en donde cada elemento contendrá
-la siguiente información:
-o Código actividad económica.
-o Nombre actividad económica.
-o El total costos y gastos nómina.
-o El total ingresos netos.
-o El total costos y gastos.
-o El total saldo por pagar.
-o El Total saldo a favor."""
-            "Total ingresos netos": elem["Total Ingresos Netos"],
-            "Total costos y gastos": elem["Total Costos y Gastos"],
-            "Total saldo para pagar": elem["Total Saldo a Pagar"],
-            "Total saldo a favor": elem["Total Saldo a Favor"]
-        }
-        lt.addLast(respuesta_filtrada, dic)
-    return respuesta_filtrada
+        #armar fila mayor 
+        referencia=lt.getElement(ordenados[nombre_mayor]["filas"],1)
+        fila_mayor={"Año": referencia["info"]["Año"], "Código sector económico": referencia["info"]["Código sector económico"], "Nombre sector económico": referencia["info"]["Nombre sector económico"], "Código subsector económico": referencia["info"]["Código subsector económico"], "Nombre subsector económico":referencia["info"]["Nombre subsector económico"],"Costos y gastos nómina":suma_mayor, "Total ingresos netos del subsector económico":0, "Total costos y gastos del subsector económico":0, "Total saldo por pagar del subsector económico":0, "Total saldo a favor del subsector económico":0 }
+        for elemento in lt.iterator(ordenados[nombre_mayor]["filas"]):
+            fila_mayor["Total ingresos netos del subsector económico"]+=int(elemento["info"]["Total ingresos netos"])
+            fila_mayor["Total costos y gastos del subsector económico"]+=int(elemento["info"]["Total costos y gastos"])
+            fila_mayor["Total saldo por pagar del subsector económico"]+=int(elemento["info"]["Total saldo a pagar"])
+            fila_mayor["Total saldo a favor del subsector económico"]+=int(elemento["info"]["Total saldo a favor"])
+        lt.addLast(nombres, fila_mayor)
+        
+        
+        #armar lista con menores y mayores
+        if ordenados[nombre_mayor]["filas"]["size"]<=6:
+            menores=encontrar_menores_dic(ordenados,ordenados[nombre_mayor]["filas"]["size"], nombre_mayor, "Costos y gastos nómina")
+            
+            filas_por_anio=lt.newList(datastructure="ARRAY_LIST")
+            for fila in lt.iterator(menores):
+                lt.addLast(filas_por_anio, fila)
+            
+        else:
+            menores=encontrar_menores_dic(ordenados,3, nombre_mayor, "Costos y gastos nómina")
+            mayores=encontrar_mayores_dic(ordenados,3, nombre_mayor, "Costos y gastos nómina")
+            filas_por_anio=lt.newList(datastructure="ARRAY_LIST")
+        
+            for fila in lt.iterator(menores):
+                lt.addLast(filas_por_anio, fila)
+        
+            for fila in lt.iterator(mayores):
+                lt.addLast(filas_por_anio, fila)
+            
+        
+        lt.addLast(filas_respuesta, filas_por_anio)
+        
+    return nombres, filas_respuesta
 
 
 
@@ -796,12 +779,52 @@ def req_7(data_structs, numero, anio_inicial, anio_final):
    
     
 
-def req_8(data_structs):
+def req_8(data_structs, numero, anio_inicial, anio_final):
     """
     Función que soluciona el requerimiento 8
     """
     # TODO: Realizar el requerimiento 8
-    pass
+    
+    por_subsector={}
+    for anio in data_structs.keys(): 
+        if anio >= anio_inicial and anio <= anio_final: 
+            for fila in lt.iterator(data_structs[anio]):
+                nombre=fila["info"]["Código subsector económico"]
+                if nombre not in por_subsector.keys():
+                    lista_filas=lt.newList(datastructure="ARRAY_LIST")
+                    lt.addLast(lista_filas, fila)
+                    por_subsector[nombre]={"filas":lista_filas,"Total de impuestos a cargo para el subsector":int(fila["info"]["Total Impuesto a cargo"]), "Total ingresos netos para el subsector":int(fila["info"]["Total ingresos netos"]), "Total costos y gastos para el subsector":int(fila["info"]["Total costos y gastos"]), "Total saldo por pagar para el subsector":int(fila["info"]["Total saldo a pagar"]),"Total saldo a favor para el subsector":int(fila["info"]["Total saldo a favor"])}
+                    
+                else:
+                    lt.addLast(por_subsector[nombre]["filas"],fila)
+                    por_subsector[nombre]["Total de impuestos a cargo para el subsector"]+=int(fila["info"]["Total Impuesto a cargo"])
+                    por_subsector[nombre]["Total ingresos netos para el subsector"]+=int(fila["info"]["Total ingresos netos"])
+                    por_subsector[nombre]["Total costos y gastos para el subsector"]+=int(fila["info"]["Total costos y gastos"])
+                    por_subsector[nombre]["Total saldo por pagar para el subsector"]+=int(fila["info"]["Total saldo a pagar"])
+                    por_subsector[nombre]["Total saldo a favor para el subsector"]+=int(fila["info"]["Total saldo a favor"])
+                               
+    
+    info_subsectores=lt.newList(datastructure="ARRAY_LIST")
+    tops_n=lt.newList(datastructure="ARRAY_LIST")
+    
+
+    
+    for subsector in  por_subsector.keys():
+        referencia=lt.getElement(por_subsector[subsector]["filas"],1)
+        filas_topn={"Código sector económico": referencia["info"]["Código sector económico"],"Nombre sector económico": referencia["info"]["Nombre sector económico"],"Código subsector económico": referencia["info"]["Código subsector económico"],"Nombre subsector económico": referencia["info"]["Nombre subsector económico"], "Total de impuestos a cargo para el subsector":por_subsector[subsector]["Total de impuestos a cargo para el subsector"], "Total ingresos netos para el subsector":por_subsector[subsector]["Total ingresos netos para el subsector"], "Total costos y gastos para el subsector":por_subsector[subsector]["Total costos y gastos para el subsector"], "Total saldo por pagar para el subsector":por_subsector[subsector]["Total saldo por pagar para el subsector"],"Total saldo a favor para el subsector":por_subsector[subsector]["Total saldo a favor para el subsector"]}
+        lt.addLast(info_subsectores, filas_topn)
+        
+        merg.sort(por_subsector[subsector]["filas"], cmp_by_Totalimpuestoscargo)
+        if por_subsector[subsector]["filas"]["size"] < numero:
+            topn_subsector=por_subsector[subsector]["filas"]
+        
+        else:
+            topn_subsector= lt.subList(por_subsector[subsector]["filas"], 1, numero)
+        lt.addLast(tops_n, topn_subsector)
+        
+    merg.sort(info_subsectores, cmp_by_nomSubsector)
+    
+    return info_subsectores, tops_n
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista

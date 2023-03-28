@@ -310,15 +310,53 @@ def print_req_3(control):
     print('TAMAÑO:  ',req_3[1])
     print('TIEMPO:  ',req_3[2])
 
-
-
 def print_req_4(control):
     """
         Función que imprime la solución del Requerimiento 4 en consola
     """
-    
     # TODO: Imprimir el resultado del requerimiento 4
-    print(controller.req_4(control))
+    respuesta=controller.req_4(control)
+    nombres=respuesta[0][0]
+    filas_respuesta=respuesta[0][1]
+    tiempo=respuesta[1]
+    columnas1=["Año", "Código sector económico", "Nombre sector económico","Código subsector económico", "Nombre subsector económico","Costos y gastos nómina", "Total ingresos netos del subsector económico", "Total costos y gastos del subsector económico", "Total saldo por pagar del subsector económico", "Total saldo a favor del subsector económico"]
+    titulos1=["Año", "Código\nsector\neconómico", "Nombre\nsector\neconómico","Código\nsubsector\neconómico", "Nombre\nsubsector\neconómico","Total\ncostos y\ngastos\nnómina del\nsubsector\neconómico", "Total\ningresos\nnetos del\nsubsector\neconómico", "Total\ncostos y\ngastos del\nsubsector\neconómico", "Total\nsaldo por\npagar del\nsubsector\neconómico", "Total\nsaldo a\nfavor del\nsubsector\neconómico"]
+    anchos1=[0.1,1,14,14,12,1,1,1,1,1]
+    print('---------------Req No. 4-------------------')
+    print("\nSubsector económico que tuvo los mayores costos y gastos de nómina para cada año disponible:\n")
+        
+    tabla1=[]
+    for data in lt.iterator(nombres):
+        linea=[]
+        for llave in columnas1:
+            linea.append(data[llave])
+        tabla1.append(linea)
+    
+    print(tabulate(tabla1, headers=titulos1, tablefmt="fancy_grid", maxcolwidths=anchos1, stralign="left", numalign="left"))
+    
+    print("\nSubsector económico que tuvo los mayores costos y gastos de nómina para cada año disponible:\n")
+    
+    #tablas por año
+    columnas2=[ "Código actividad económica", "Nombre actividad económica", "Costos y gastos nómina", "Total ingresos netos","Total costos y gastos", "Total saldo a pagar", "Total saldo a favor"]
+    titulos2=["Código\nactividad\neconómica", "Nombre\nactividad\neconómica", "Total\ncostos\ny gastos\nnómina", "Total\ningresos\nnetos", "Total\ncostos\ny gastos", "Total\nsaldo\na pagar" , "Total\nsaldo\na favor" ]
+    anchos2=[2,30,2,2,2,2,2]
+    
+    for fila_anios in lt.iterator(filas_respuesta):
+        tabla = []
+        size=fila_anios["size"]
+        referencia=lt.getElement(fila_anios,1)
+        print ("\nHay " + str(size) + " actividades económicas en "  + str(referencia["info"]["Año"]) + ", en el subsector económico "+ str(referencia["info"]["Código subsector económico"]) +": "+str(referencia["info"]["Nombre subsector económico"])+"\n")
+        for data in lt.iterator(fila_anios):
+            linea=[]
+            for llave in columnas2:
+                if llave== "Código actividad económica":
+                    linea.append(data[llave])
+                else:
+                    linea.append(data["info"][llave])
+            tabla.append(linea)
+        print(tabulate(tabla, headers=titulos2, tablefmt="fancy_grid", maxcolwidths=anchos2, stralign="left", numalign="left" ))
+    
+    print('\nTiempo de ejecución:',tiempo,'ms\n')
 
 
 def print_req_5(control):
@@ -496,7 +534,45 @@ def print_req_8(control):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    print (controller.req_8(control))
+    numero =int(input("Ingrese el top n: "))  
+    anio_inicial= input("Ingrese el año incial (año entre 2012 y 2021): ") 
+    anio_final= input("Ingrese el año final (año entre 2012 y 2021): ") 
+    respuesta= controller.req_8(control, numero, anio_inicial, anio_final)
+    info_subsector=respuesta[0][0]
+    tops_n=respuesta[0][1]
+    tiempo=respuesta[1] 
+    
+    columnas1=["Código sector económico","Nombre sector económico","Código subsector económico", "Nombre subsector económico","Total de impuestos a cargo para el subsector", "Total ingresos netos para el subsector", "Total costos y gastos para el subsector", "Total saldo por pagar para el subsector", "Total saldo a favor para el subsector"] 
+    titulos1=["Código\nsector\neconómico","Nombre\nsector\neconómico","Código\nsubsector\neconómico", "Nombre\nsubsector\neconómico","Total de\nimpuestos\na cargo\npara el\nsubsector", "Total\ningresos\nnetos\npara el\nsubsector", "Total\ncostos\ny gastos\npara el\nsubsector", "Total\nsaldo\npor pagar\npara el\nsubsector", "Total saldo\na favor para\nel subsector"]
+    anchos1=[None,14,None, 14, None, None, None, None, None]
+    
+    print ("\nTop "  + str(numero) + " actividades económicas de cada subsector con los mayores totales de impuestos a cargo entre " + str(anio_inicial) + " y "+ str(anio_final) + ":\n") 
+    tabla1=[]
+    for data in lt.iterator(info_subsector):
+        linea=[]
+        for llave in columnas1:
+            linea.append(data[llave])
+              
+        tabla1.append(linea)
+       
+    print(tabulate(tabla1, headers=titulos1, tablefmt="fancy_grid", maxcolwidths=anchos1, stralign="left", numalign="left"))    
+    
+    columnas2=["Código actividad económica", "Nombre actividad económica", "Total Impuesto a cargo", "Total ingresos netos", "Total costos y gastos", "Total saldo a pagar", "Total saldo a favor"] 
+    titulos2=["Código\nactividad\neconómica", "Nombre\nactividad\neconómica", "Total\nImpuesto\na cargo", "Total\ningresos\nnetos", "Total\ncostos y\ngastos", "Total\nsaldo\na pagar", "Total\nsaldo\na favor"] 
+    anchos2=[None,14,None,None, None, None, None]
+    
+    for top in lt.iterator(tops_n):
+        referencia=lt.getElement(top,1)
+        if top["size"]<numero:
+            print ("\nSolo hay "  + str(top["size"]) + " actividades económicas en el subsector "+str(referencia["info"]["Código subsector económico"])+":\n") 
+        
+        else:  
+            print ("\nTop "  + str(numero) + " actividades económicas del subsector "+str(referencia["info"]["Código subsector económico"])+":\n") 
+        print_tabla_filas(top,columnas2, titulos2, anchos2)
+            
+    
+    
+    print('\nTiempo de ejecución:',tiempo,'ms\n')
     
     
 
