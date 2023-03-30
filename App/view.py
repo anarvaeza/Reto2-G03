@@ -99,7 +99,7 @@ def print_menu():
     print("Bienvenido")
     print("1- Cargar información")
     print("2- Obtener la actividad económica con mayor saldo a pagar para un sector económico y un año específico.")
-    print("3- Listar las actividades económicas con mayor total saldo a favor para para todos los años")
+    print("3- Obtener la actividad económica con mayor saldo a favor para un sector económico y un año específico")
     print("4- Encontrar el subsector económico con el menor total de retenciones para todos los años disponibles")
     print("5- Encontrar el subsector económico con los mayores costos y gastos de nómina para todos los años disponibles")
     print("6- Encontrar el subsector econmico con los mayores descuentos tributarios para todos los años disponibles")
@@ -151,7 +151,6 @@ def menu_tipo_ordenamiento():
     print("4- quick sort")
     print("5- merge sort")
 
-
 def menu_nombre_archivo():
     print("Que porcentage de datos ")
     print("1-1%")
@@ -186,8 +185,6 @@ def menu_ordenamiento():
             print("Ingrese  opción válida.\n")
             traceback.print_exc()
 
-    
-     
 # los nombres de los datos
 def menu_archivo():
     menu_nombre_archivo()
@@ -219,10 +216,6 @@ def menu_archivo():
             print(" una opción válida.\n")
             traceback.print_exc()
 
-
-
-
-
 def load_data(control, archivo):
     """
     Carga los datos
@@ -249,24 +242,19 @@ def print_req_1(control):
                  "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
                  "Total saldo a pagar", "Total saldo a favor"] )
     print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
-    #print(respuesta)
 
 def print_req_2(control):
     """
-        Función que imprime la solución del Requerimiento 2 en consola
+    Función que imprime la solución del Requerimiento 1 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 2
-    
-    respuesta = (controller.req_2(control))
-    res = filtrar_lista_dics_por(respuesta[0],['Año',"Código actividad económica", "Nombre actividad económica", "Código sector económico","Nombre sector económico",
+    anio = input("Introduzca un año específico ")
+    codigo_sector = input("Introduzca el código de un sector economico específico ")
+    respuesta = controller.req_2(control, anio, codigo_sector)
+    res = filtrar_lista_dics_por(respuesta[0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
                  "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
                  "Total saldo a pagar", "Total saldo a favor"] )
     print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
-    print(respuesta[1])
    
-    
-
-
 def print_req_3(control):
     """
         Función que imprime la solución del Requerimiento 3 en consola
@@ -360,7 +348,6 @@ def print_req_4(control):
     
     print('\nTiempo de ejecución:',tiempo,'ms\n')
 
-
 def print_req_5(control):
     """
         Función que imprime la solución del Requerimiento 5 en consola
@@ -400,6 +387,7 @@ def print_req_5(control):
             fin = filtrar_lista_dics_por(extremos[ext][0], heads)
             print(tabulate(fin, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
     print(respuesta[1])
+    
 def print_req_6(control):
     """
         Función que imprime la solución del Requerimiento 6 en consola
@@ -512,7 +500,6 @@ def print_req_6(control):
     print('TAMAÑO: ',req_6_tamanio)
     print('TIEMPO: ', req_6_time)
 
-
 def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
@@ -529,7 +516,6 @@ def print_req_7(control):
     fin = filtrar_lista_dics_por(respuesta[0], heads)
     print(tabulate(fin, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
     print(respuesta[1])
-
 
 def print_req_8(control):
     """

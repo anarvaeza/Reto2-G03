@@ -194,7 +194,6 @@ def req_1(data_structs, anio, codigo_sector):
     """
     tamanio = data_size(data_structs)
     anios = crear_diccionario(data_structs, "data","Año", tamanio)
-    lista_parametros = lt.newList(datastructure="ARRAY_LIST")
     datos_anio = anios[anio]
     lista_dicts = datos_anio["elements"]
     mayor = lt.newList(datastructure="ARRAY_LIST")
@@ -210,27 +209,26 @@ def req_1(data_structs, anio, codigo_sector):
                 
     return (mayor)
         
-def req_2(data_structs):
+def req_2(data_structs, anio, codigo_sector):
     """
     Función que soluciona el requerimiento 2
     """
     tamanio = data_size(data_structs)
     anios = crear_diccionario(data_structs, "data","Año", tamanio)
-    
-   
-    # crea una lista con el mayor de cada año
-    busca = "Total saldo a favor"
-
+    datos_anio = anios[anio]
+    lista_dicts = datos_anio["elements"]
     mayor = lt.newList(datastructure="ARRAY_LIST")
-    for fecha in anios.keys():
-        alto = encontrar_mayor(anios[fecha], busca)
-        lt.addLast(mayor, alto)
-    
-    repeticiones = lt.size(mayor)
-    respuesta = ordenar(mayor, "Año", repeticiones, 0)
-    
-    
-    return (respuesta)
+    alto = 0
+    for dict in lista_dicts:
+        if dict["Código sector económico"] == codigo_sector:
+            if int(dict["Total saldo a favor"]) > alto:
+                if lt.isEmpty(mayor) == True:
+                    lt.addFirst(mayor, dict)
+                else:
+                    lt.deleteElement(mayor, 0)
+                    lt.addFirst(mayor, dict)
+                
+    return (mayor)
 
  
     
