@@ -195,21 +195,21 @@ def req_1(data_structs, anio, codigo_sector):
     tamanio = data_size(data_structs)
     anios = crear_diccionario(data_structs, "data","Año", tamanio)
     lista_parametros = lt.newList(datastructure="ARRAY_LIST")
-    for fecha in anios.keys():
-        datos_anio = anios[fecha]
-        codigo_sector_anio = datos_anio["Código sector económico"]
-        if fecha == anio and codigo_sector_anio == codigo_sector:
-            lt.addLast(lista_parametros, anios[fecha])
-            
-    #Crea un diccionario con los los años en sus llaves
-    busca = "Total saldo a pagar"
+    datos_anio = anios[anio]
+    lista_dicts = datos_anio["elements"]
     mayor = lt.newList(datastructure="ARRAY_LIST")
-    tamanio_lista_p = data_size(lista_parametros)
-    for elementos in lista_parametros:
-        alto = encontrar_mayor(lista_parametros, busca)
-        lt.addLast(mayor, alto)
-    return (mayor)
+    alto = 0
+    for dict in lista_dicts:
+        if dict["Código sector económico"] == codigo_sector:
+            if int(dict["Total saldo a pagar"]) > alto:
+                if lt.isEmpty(mayor) == True:
+                    lt.addFirst(mayor, dict)
+                else:
+                    lt.deleteElement(mayor, 0)
+                    lt.addFirst(mayor, dict)
                 
+    return (mayor)
+        
 def req_2(data_structs):
     """
     Función que soluciona el requerimiento 2
@@ -332,16 +332,6 @@ def agregar_lista_de_6_a_subsector(subsector, lista_de_actividades_un_anio):
         subsector['Primeras y últimas 3 actividades en contribuir']= lista_6_activ_por_anio
         #print(len(lista_6_activ_por_anio))
         return subsector
-
-
-
-            
-
-            
-
-
-
-
 
 
 def req_3(data_structs):

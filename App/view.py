@@ -245,11 +245,11 @@ def print_req_1(control):
     anio = input("Introduzca un año específico ")
     codigo_sector = input("Introduzca el código de un sector economico específico ")
     respuesta = controller.req_1(control, anio, codigo_sector)
-    #res = filtrar_lista_dics_por(respuesta[0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
-    #             "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
-    #             "Total saldo a pagar", "Total saldo a favor"] )
-    #print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
-    print(respuesta)
+    res = filtrar_lista_dics_por(respuesta[0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
+    #print(respuesta)
 
 def print_req_2(control):
     """
