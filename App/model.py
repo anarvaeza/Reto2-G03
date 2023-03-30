@@ -188,45 +188,28 @@ def data_size(data_structs):
     return lt.size(data_structs["data"])
 
 
-def req_1(data_structs):
+def req_1(data_structs, anio, codigo_sector):
     """
     Función que soluciona el requerimiento 1
     """
     tamanio = data_size(data_structs)
     anios = crear_diccionario(data_structs, "data","Año", tamanio)
-    #anios_filtrado = dict_filtrado(anios)
+    lista_parametros = lt.newList(datastructure="ARRAY_LIST")
+    for fecha in anios.keys():
+        datos_anio = anios[fecha]
+        codigo_sector_anio = datos_anio["Código sector económico"]
+        if fecha == anio and codigo_sector_anio == codigo_sector:
+            lt.addLast(lista_parametros, anios[fecha])
+            
     #Crea un diccionario con los los años en sus llaves
     busca = "Total saldo a pagar"
     mayor = lt.newList(datastructure="ARRAY_LIST")
-    for fecha in anios.keys():
-        alto = encontrar_mayor(anios[fecha], busca)
+    tamanio_lista_p = data_size(lista_parametros)
+    for elementos in lista_parametros:
+        alto = encontrar_mayor(lista_parametros, busca)
         lt.addLast(mayor, alto)
-    
-    repeticiones = lt.size(mayor)
-    respuesta = ordenar(mayor, "Año", repeticiones, 0)
-
-    return (respuesta)
+    return (mayor)
                 
-"""def dict_filtrado(diccionario_anios):
-    dict_filtrado = {}
-    for anio in diccionario_anios:
-        parametros_filtrados = lt.newList(datastructure="ARRAY_LIST")
-        parametros_og = lt.newList(datastructure="ARRAY_LIST")
-        parametros_og = diccionario_anios[anio]
-        lt.addLast(parametros_filtrados, parametros_og["Año"])
-        lt.addLast(parametros_filtrados, parametros_og["Código actividad económica"])
-        lt.addLast(parametros_filtrados, parametros_og["Nombre actividad económica"])
-        lt.addLast(parametros_filtrados, parametros_og["Código sector económico"])
-        lt.addLast(parametros_filtrados, parametros_og["Nombre sector económico"])
-        lt.addLast(parametros_filtrados, parametros_og["Código subsector económico"])
-        lt.addLast(parametros_filtrados, parametros_og["Nombre subsector económico"])
-        lt.addLast(parametros_filtrados, parametros_og["Total ingresos netos"])
-        lt.addLast(parametros_filtrados, parametros_og["Total costos y gastos"])
-        lt.addLast(parametros_filtrados, parametros_og["Total saldo para pagar"])
-        lt.addLast(parametros_filtrados, parametros_og["Total saldo a favor"])
-        dict_filtrado[anio] = parametros_filtrados
-    return dict_filtrado"""
-
 def req_2(data_structs):
     """
     Función que soluciona el requerimiento 2
@@ -697,20 +680,6 @@ def req_6(data_structs, anio):
 
     return lista_sectores
 
-    
-
-
-
-
-
-
-
-
-
-
-    
-    
-
 
 def req_7(data_structs, numero, anio_inicial, anio_final):
     """
@@ -726,17 +695,8 @@ def req_7(data_structs, numero, anio_inicial, anio_final):
         if int(fecha) >= int(anio_inicial) and int(fecha)<= int(anio_final):
             
             lt.addLast(por_anio, orden_anios[fecha])
-    
 
-    
-    
-    
-    i = 1
-    
-                
-                 
-
-            
+    i = 1        
     
     listas_org = lt.newList(datastructure="ARRAY_LIST")
     while i<lt.size(por_anio)+1:
@@ -747,7 +707,6 @@ def req_7(data_structs, numero, anio_inicial, anio_final):
 
         i +=1
     e = 0
-     
 
     final = lt.newList("SINGLE_LINKED")
     while e < int(numero):

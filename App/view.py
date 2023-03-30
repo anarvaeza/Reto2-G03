@@ -98,7 +98,7 @@ def new_controller(tipo):
 def print_menu():
     print("Bienvenido")
     print("1- Cargar información")
-    print("2- Listar las actividades económicas con mayor total saldo a pagar para todos los años")
+    print("2- Obtener la actividad económica con mayor saldo a pagar para un sector económico y un año específico.")
     print("3- Listar las actividades económicas con mayor total saldo a favor para para todos los años")
     print("4- Encontrar el subsector económico con el menor total de retenciones para todos los años disponibles")
     print("5- Encontrar el subsector económico con los mayores costos y gastos de nómina para todos los años disponibles")
@@ -242,11 +242,13 @@ def print_req_1(control):
     """
     Función que imprime la solución del Requerimiento 1 en consola
     """
-    respuesta = (controller.req_1(control))
-    res = filtrar_lista_dics_por(respuesta[0],['Año',"Código actividad económica", "Nombre actividad económica", "Código sector económico","Nombre sector económico",
-                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
-                 "Total saldo a pagar", "Total saldo a favor"] )
-    print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
+    anio = input("Introduzca un año específico ")
+    codigo_sector = input("Introduzca el código de un sector economico específico ")
+    respuesta = controller.req_1(control, anio, codigo_sector)
+    #res = filtrar_lista_dics_por(respuesta[0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+    #             "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+    #             "Total saldo a pagar", "Total saldo a favor"] )
+    #print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
     print(respuesta)
 
 def print_req_2(control):
