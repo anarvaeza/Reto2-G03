@@ -130,19 +130,16 @@ def req_2(control, anio, codigo_sector):
     return req_2, delta_t
 
 
-def req_3(control):
+def req_3(control, anio):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
     start_time = get_time()
-    req_3 = model.req_3(control["model"])
+    req_3 = model.req_3(control["model"], anio)
     end_time = get_time()
     delta_t = delta_time(start_time,end_time)
-   
-    tamanio = data_size(control)
-
-    return req_3, tamanio, delta_t
+    return req_3, delta_t
 
 
 def req_4(control):

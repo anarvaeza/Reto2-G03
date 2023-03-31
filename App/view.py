@@ -100,7 +100,7 @@ def print_menu():
     print("1- Cargar información")
     print("2- Obtener la actividad económica con mayor saldo a pagar para un sector económico y un año específico.")
     print("3- Obtener la actividad económica con mayor saldo a favor para un sector económico y un año específico")
-    print("4- Encontrar el subsector económico con el menor total de retenciones para todos los años disponibles")
+    print("4- Encontrar el subsector económico con el menor total de retenciones para un año específico")
     print("5- Encontrar el subsector económico con los mayores costos y gastos de nómina para todos los años disponibles")
     print("6- Encontrar el subsector econmico con los mayores descuentos tributarios para todos los años disponibles")
     print("7- Encontrar la actividad económica con el mayor total de ingresos netos para cada sector económico en un año específico")
@@ -242,6 +242,7 @@ def print_req_1(control):
                  "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
                  "Total saldo a pagar", "Total saldo a favor"] )
     print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
+    print(respuesta[1])
 
 def print_req_2(control):
     """
@@ -253,52 +254,31 @@ def print_req_2(control):
     res = filtrar_lista_dics_por(respuesta[0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
                  "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
                  "Total saldo a pagar", "Total saldo a favor"] )
-    print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15  ))
+    print(tabulate(res, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
+    print(respuesta[1])
    
 def print_req_3(control):
     """
-        Función que imprime la solución del Requerimiento 3 en consola
+    Función que imprime la solución del Requerimiento 3 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 3
-    req_3 = controller.req_3(control)
-
-    respuesta = req_3[0]['elements']
-
-    respuesta_filtrada =filtrar_lista_dics_por_columnas( respuesta,['Año','Código sector económico',
-                                              'Nombre sector económico','Código subsector económico',
-                                          'Nombre subsector económico', 'Total retenciones','Total ingresos netos',
-                                          'Total costos y gastos','Total saldo a pagar','Total saldo a favor'])
-
-    #res_esp_2019 = respuesta[1]['Primeras y últimas 3 actividades en contribuir']
-
-    tabulate_respuesta = tabulate(respuesta_filtrada, headers='keys', maxcolwidths =[10]*6, maxheadercolwidths=[10]*6)
-    print(tabulate_respuesta)
-    i=0
-    tamanio_lista = len(respuesta)
-    while i<tamanio_lista:
-
-        anio_subsect = respuesta[i]['Año']
-        lista_por_subsec = filtrar_lista_dics_por_columnas(respuesta[i]['Primeras y últimas 3 actividades en contribuir'],['Código actividad económica',
-                                                            'Nombre actividad económica','Total retenciones','Total ingresos netos',
-                                          'Total costos y gastos','Total saldo a pagar','Total saldo a favor'])
-        
-        lista_subsect_tabulete = tabulate(lista_por_subsec,headers='keys', maxcolwidths =[10]*7, maxheadercolwidths=[10]*7)
-        print('Actividades que más y menos contribuyeron al subsector para ',anio_subsect)
-        print(lista_subsect_tabulete)
-
-        i+=1
-
-
-    #print(type(res_esp_2016))
-    #print(res_esp_2016)
-    #df_2019 = pd.DataFrame(res_esp_2019)
-    #df = pd.DataFrame(respuesta)
-    #df_fil = df[['Año','Nombre subsector económico','Total retenciones']]
-    #df_filt_2019 = df_2019[['Código actividad económica','Nombre actividad económica']]
-    #print(df_fil)
-    #print(df_filt_2019)
-    print('TAMAÑO:  ',req_3[1])
-    print('TIEMPO:  ',req_3[2])
+    anio = input("Introduzca un año específico ")
+    respuesta = controller.req_3(control, anio)
+    res0 = filtrar_lista_dics_por(respuesta[0][0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res0, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
+    
+    res1 = filtrar_lista_dics_por(respuesta[0][1],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res1, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
+    
+    res2 = filtrar_lista_dics_por(respuesta[0][2],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res2, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
+    
+    print(respuesta[1])
 
 def print_req_4(control):
     """

@@ -60,7 +60,6 @@ def new_data_structs(type):
 
     return data_structs
 
-
 # Funciones para agregar informacion al modelo
 
 def add_data(data_structs, data):
@@ -83,7 +82,6 @@ def add_data(data_structs, data):
     lt.addLast(data_structs["data"], d)
 
     return data_structs
-
 
 # Funciones para creacion de datos
 
@@ -166,8 +164,6 @@ def new_data(anio, cod_acti, nom_acti, cod_sector, nom_sector, cod_subsec, nom_s
     data["Total saldo a favor"] = total_favor
 
     return data
-
-
 # Funciones de consulta
 
 def get_data(data_structs, id):
@@ -180,13 +176,11 @@ def get_data(data_structs, id):
         return data
     return None
 
-
 def data_size(data_structs):
     """
     Retorna el tamaño de la lista de datos
     """
     return lt.size(data_structs["data"])
-
 
 def req_1(data_structs, anio, codigo_sector):
     """
@@ -230,12 +224,6 @@ def req_2(data_structs, anio, codigo_sector):
                 
     return (mayor)
 
- 
-    
-
-    # TODO: Realizar el requerimiento 2
-    
-     ### Crea lista TAD ARRAY de subsectores por año
 def crear_lista_subsectores_por_anio(lista_actividades):
    
     dic_subsecs ={}
@@ -331,33 +319,120 @@ def agregar_lista_de_6_a_subsector(subsector, lista_de_actividades_un_anio):
         #print(len(lista_6_activ_por_anio))
         return subsector
 
-
-def req_3(data_structs):
+def req_3(data_structs, anio):
     """
-    Función que soluciona el requerimiento 3
+    #Función que soluciona el requerimiento 3
     """
-    lista_dicts_menores_anios = lt.newList('ARRAY_LIST')
-    tamanio_data_structs = data_size(data_structs)
-    dic_anios = crear_diccionario(data_structs, "data","Año", tamanio_data_structs)
-    for lista_actividades_un_anio_dado in dic_anios.values():
+    tamanio = data_size(data_structs)
+    anios = crear_diccionario(data_structs, "data","Año", tamanio)
+    datos_anio = anios[anio]
+    lista_dics = datos_anio["elements"]
+    menor_subsector = lt.newList(datastructure="ARRAY_LIST")
+    lt.addFirst(menor_subsector, lista_dics[0])
+    bajo_subsector = int(lista_dics[0]["Total retenciones"])
+    for dict in lista_dics:
+        if int(dict["Total saldo a pagar"]) > bajo_subsector:
+                lt.deleteElement(menor_subsector, 0)
+                lt.addFirst(menor_subsector, dict)
+    valores_max = encontrar_mayores_retenciones(lista_dics)
+    valores_min = encontrar_menores_retenciones(lista_dics)
+    return (menor_subsector, valores_max, valores_min)
 
-      
+def encontrar_mayores_retenciones(lista_de_diccionarios):
+    valores_mayores = lt.newList(datastructure="ARRAY_LIST")
+    lt.addFirst(valores_mayores, lista_de_diccionarios[0])
 
-        ####crea lista subsectkores patra el año dado
-        lista_subsects_un_anio_dado = crear_lista_subsectores_por_anio(lista_actividades_un_anio_dado)
-
-        ##encuentra menor subsect por retenciones
-        menor = encontrar_menor(lista_subsects_un_anio_dado, 'Total retenciones')
-        agregar_lista_de_6_a_subsector(menor,lista_actividades_un_anio_dado)
-        lt.addLast(lista_dicts_menores_anios,menor)
-
-    quk.sort(lista_dicts_menores_anios,sort_criteria)
-    return lista_dicts_menores_anios
+    for diccionario in lista_de_diccionarios:
+        tot_retenciones = float(diccionario["Total retenciones"])
+        if lt.size(valores_mayores) < 2:
+            mayor = lt.firstElement(valores_mayores)
+            if mayor["Total retenciones"] < diccionario["Total retenciones"]:
+                lt.addFirst(valores_mayores, diccionario)
+            else:
+                lt.addLast(valores_mayores, diccionario)
+                
+        elif lt.size(valores_mayores) < 3:
+            dic_0 = lt.getElement(valores_mayores, 0)
+            dic_1 = lt.getElement(valores_mayores, 1)
+            if tot_retenciones > float(dic_0["Total retenciones"]):
+                lt.insertElement(valores_mayores, diccionario, 0)
+            elif tot_retenciones > float(dic_1["Total retenciones"]):
+                lt.insertElement(valores_mayores, diccionario, 1)
         
+        else:
+            dic_0 = lt.getElement(valores_mayores, 0)
+            dic_1 = lt.getElement(valores_mayores, 1)
+            dic_2 = lt.getElement(valores_mayores, 2)
+            if tot_retenciones > float(dic_0["Total retenciones"]):
+                lt.insertElement(valores_mayores, diccionario, 0)
+                lt.deleteElement(valores_mayores, 2)
+            elif tot_retenciones > float(dic_1["Total retenciones"]):
+                lt.insertElement(valores_mayores, diccionario, 1)
+                lt.deleteElement(valores_mayores, 2)
+            elif tot_retenciones > float(dic_2["Total retenciones"]):
+                lt.insertElement(valores_mayores, diccionario, 2)
+                lt.deleteElement(valores_mayores, 2)
+    return valores_mayores
+    
+def encontrar_menores_retenciones(lista_de_diccionarios):
+    valores_menores = lt.newList(datastructure="ARRAY_LIST")
+    lt.addFirst(valores_menores, lista_de_diccionarios[0])
+    
+    for diccionario in lista_de_diccionarios:
+        tot_retenciones = float(diccionario["Total retenciones"])
+        if lt.size(valores_menores) < 2:
+            menor = lt.firstElement(valores_menores)
+            if menor["Total retenciones"] < diccionario["Total retenciones"]:
+                lt.addFirst(valores_menores, diccionario)
+            else:
+                lt.addLast(valores_menores, diccionario)
+                
+        elif lt.size(valores_menores) < 3:
+            dic_0 = lt.getElement(valores_menores, 0)
+            dic_1 = lt.getElement(valores_menores, 1)
+            if tot_retenciones > float(dic_0["Total retenciones"]):
+                lt.insertElement(valores_menores, diccionario, 0)
+            elif tot_retenciones > float(dic_1["Total retenciones"]):
+                lt.insertElement(valores_menores, diccionario, 1)
+        
+        else:
+            dic_0 = lt.getElement(valores_menores, 0)
+            dic_1 = lt.getElement(valores_menores, 1)
+            dic_2 = lt.getElement(valores_menores, 2)
+            if tot_retenciones > float(dic_0["Total retenciones"]):
+                lt.insertElement(valores_menores, diccionario, 0)
+                lt.deleteElement(valores_menores, 2)
+            elif tot_retenciones > float(dic_1["Total retenciones"]):
+                lt.insertElement(valores_menores, diccionario, 1)
+                lt.deleteElement(valores_menores, 2)
+            elif tot_retenciones > float(dic_2["Total retenciones"]):
+                lt.insertElement(valores_menores, diccionario, 2)
+                lt.deleteElement(valores_menores, 2)
+    return valores_menores
+    
+    # Encuentra los 3 valores mayores
+    for i in range(3):
+        mayor = valores_z[0]
+        for valor in valores_z:
+            if valor > mayor:
+                mayor = valor
+        valores_mayores.append(mayor)
+        valores_z.remove(mayor)
+    
+    # Encuentra los 3 valores menores
+    for i in range(3):
+        menor = valores_z[0]
+        for valor in valores_z:
+            if valor < menor:
+                menor = valor
+        valores_menores.append(menor)
+        valores_z.remove(menor)
+    
+    return (valores_mayores, valores_menores)
 
 def req_4(data_structs):
     """
-    Función que soluciona el requerimiento 4
+    #Función que soluciona el requerimiento 4
     """
     nombres=lt.newList(datastructure="ARRAY_LIST")
     filas_respuesta=lt.newList(datastructure="ARRAY_LIST")
@@ -403,8 +478,6 @@ def req_4(data_structs):
         lt.addLast(filas_respuesta, filas_por_anio)
         
     return nombres, filas_respuesta
-
-
 
 def req_5(data_struct):
     """
@@ -487,10 +560,6 @@ def dic(anio, cod_sec, nom_sec, cod_subsec, nom_subsec, des, ing_net, cos_gas, p
 
 ### Crea TAD ARRAY de 
 
-    
-
-
-
 def crear_lista_subsectores_totalizados_6(dic_subsects):
     
     ### Primero crear diccionario
@@ -535,10 +604,6 @@ def crear_lista_subsectores_totalizados_6(dic_subsects):
 
     return lista_subsects
 
-                
-
-
-
 def crear_lista_sectores_totalizados_por_anio(lista_subsects):
    
     dic_secs ={}
@@ -578,15 +643,6 @@ def crear_lista_sectores_totalizados_por_anio(lista_subsects):
         lt.addLast(lista_sects,dic_secs[llave])
 
     return lista_sects
-         
-
-       
-
-       
-
-
-
-
 
 def req_6(data_structs, anio):
     """
@@ -668,7 +724,6 @@ def req_6(data_structs, anio):
 
     return lista_sectores
 
-
 def req_7(data_structs, numero, anio_inicial, anio_final):
     """
     Función que soluciona el requerimiento 7
@@ -711,20 +766,6 @@ def req_7(data_structs, numero, anio_inicial, anio_final):
         e+=1
         
     return final
-
-
-
-
-
-               
-
-
-
-
-
-    
-   
-    
 
 def req_8(data_structs, numero, anio_inicial, anio_final):
     """
@@ -987,8 +1028,6 @@ def crear_diccionario_de_TAD (TAD ,categoria,tamanio):
         
         i +=1
     return dic
-
-
 #ordenar la lista en orden
 def ordenar(lista, criterio, repeticiones, donde ):
     #organiza por años de menor a mayor
