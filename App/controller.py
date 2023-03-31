@@ -142,13 +142,13 @@ def req_3(control, anio):
     return req_3, delta_t
 
 
-def req_4(control):
+def req_4(control, anio):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
     start_time = get_time()
-    req_4 = model.req_4(control["model"])
+    req_4 = model.req_4(control["model"], anio)
     end_time = get_time()
     delta_t = delta_time(start_time, end_time)
     return req_4, round(delta_t, 3)

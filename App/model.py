@@ -430,54 +430,24 @@ def encontrar_menores_retenciones(lista_de_diccionarios):
     
     return (valores_mayores, valores_menores)
 
-def req_4(data_structs):
+def req_4(data_structs, anio):
     """
-    #Función que soluciona el requerimiento 4
+    #Función que soluciona el requerimiento 3
     """
-    nombres=lt.newList(datastructure="ARRAY_LIST")
-    filas_respuesta=lt.newList(datastructure="ARRAY_LIST")
-    for anio in data_structs.keys():
-        lista=ordenar_por_columna(data_structs[anio],"Nombre subsector económico", "Costos y gastos nómina")
-        ordenados=lista[0]
-        referencia=lista[1]
-        info_suma=buscar_mayor_suma(ordenados, referencia)
-        nombre_mayor=info_suma[0]
-        suma_mayor=info_suma[1]
-        
-        #armar fila mayor 
-        referencia=lt.getElement(ordenados[nombre_mayor]["filas"],1)
-        fila_mayor={"Año": referencia["info"]["Año"], "Código sector económico": referencia["info"]["Código sector económico"], "Nombre sector económico": referencia["info"]["Nombre sector económico"], "Código subsector económico": referencia["info"]["Código subsector económico"], "Nombre subsector económico":referencia["info"]["Nombre subsector económico"],"Costos y gastos nómina":suma_mayor, "Total ingresos netos del subsector económico":0, "Total costos y gastos del subsector económico":0, "Total saldo por pagar del subsector económico":0, "Total saldo a favor del subsector económico":0 }
-        for elemento in lt.iterator(ordenados[nombre_mayor]["filas"]):
-            fila_mayor["Total ingresos netos del subsector económico"]+=int(elemento["info"]["Total ingresos netos"])
-            fila_mayor["Total costos y gastos del subsector económico"]+=int(elemento["info"]["Total costos y gastos"])
-            fila_mayor["Total saldo por pagar del subsector económico"]+=int(elemento["info"]["Total saldo a pagar"])
-            fila_mayor["Total saldo a favor del subsector económico"]+=int(elemento["info"]["Total saldo a favor"])
-        lt.addLast(nombres, fila_mayor)
-        
-        
-        #armar lista con menores y mayores
-        if ordenados[nombre_mayor]["filas"]["size"]<=6:
-            menores=encontrar_menores_dic(ordenados,ordenados[nombre_mayor]["filas"]["size"], nombre_mayor, "Costos y gastos nómina")
-            
-            filas_por_anio=lt.newList(datastructure="ARRAY_LIST")
-            for fila in lt.iterator(menores):
-                lt.addLast(filas_por_anio, fila)
-            
-        else:
-            menores=encontrar_menores_dic(ordenados,3, nombre_mayor, "Costos y gastos nómina")
-            mayores=encontrar_mayores_dic(ordenados,3, nombre_mayor, "Costos y gastos nómina")
-            filas_por_anio=lt.newList(datastructure="ARRAY_LIST")
-        
-            for fila in lt.iterator(menores):
-                lt.addLast(filas_por_anio, fila)
-        
-            for fila in lt.iterator(mayores):
-                lt.addLast(filas_por_anio, fila)
-            
-        
-        lt.addLast(filas_respuesta, filas_por_anio)
-        
-    return nombres, filas_respuesta
+    tamanio = data_size(data_structs)
+    anios = crear_diccionario(data_structs, "data","Año", tamanio)
+    datos_anio = anios[anio]
+    lista_dics = datos_anio["elements"]
+    mayor_subsector = lt.newList(datastructure="ARRAY_LIST")
+    lt.addFirst(mayor_subsector, lista_dics[0])
+    bajo_subsector = int(lista_dics[0]["Costos y gastos nómina"])
+    for dict in lista_dics:
+        if int(dict["Total saldo a pagar"]) > bajo_subsector:
+                lt.deleteElement(mayor_subsector, 0)
+                lt.addFirst(mayor_subsector, dict)
+    valores_max = encontrar_mayores_retenciones(lista_dics)
+    valores_min = encontrar_menores_retenciones(lista_dics)
+    return (mayor_subsector, valores_max, valores_min)
 
 def req_5(data_struct):
     """

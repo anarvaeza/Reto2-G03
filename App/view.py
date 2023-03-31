@@ -101,7 +101,7 @@ def print_menu():
     print("2- Obtener la actividad económica con mayor saldo a pagar para un sector económico y un año específico.")
     print("3- Obtener la actividad económica con mayor saldo a favor para un sector económico y un año específico")
     print("4- Encontrar el subsector económico con el menor total de retenciones para un año específico")
-    print("5- Encontrar el subsector económico con los mayores costos y gastos de nómina para todos los años disponibles")
+    print("5- Encontrar el subsector económico con los mayores costos y gastos de nómina para un años disponibles")
     print("6- Encontrar el subsector econmico con los mayores descuentos tributarios para todos los años disponibles")
     print("7- Encontrar la actividad económica con el mayor total de ingresos netos para cada sector económico en un año específico")
     print("8- Listar el TOP (N) de las actividades económicas con el menor total de costos y gastos para un periodo de tiempo")
@@ -282,51 +282,26 @@ def print_req_3(control):
 
 def print_req_4(control):
     """
-        Función que imprime la solución del Requerimiento 4 en consola
+    Función que imprime la solución del Requerimiento 3 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 4
-    respuesta=controller.req_4(control)
-    nombres=respuesta[0][0]
-    filas_respuesta=respuesta[0][1]
-    tiempo=respuesta[1]
-    columnas1=["Año", "Código sector económico", "Nombre sector económico","Código subsector económico", "Nombre subsector económico","Costos y gastos nómina", "Total ingresos netos del subsector económico", "Total costos y gastos del subsector económico", "Total saldo por pagar del subsector económico", "Total saldo a favor del subsector económico"]
-    titulos1=["Año", "Código\nsector\neconómico", "Nombre\nsector\neconómico","Código\nsubsector\neconómico", "Nombre\nsubsector\neconómico","Total\ncostos y\ngastos\nnómina del\nsubsector\neconómico", "Total\ningresos\nnetos del\nsubsector\neconómico", "Total\ncostos y\ngastos del\nsubsector\neconómico", "Total\nsaldo por\npagar del\nsubsector\neconómico", "Total\nsaldo a\nfavor del\nsubsector\neconómico"]
-    anchos1=[0.1,1,14,14,12,1,1,1,1,1]
-    print('---------------Req No. 4-------------------')
-    print("\nSubsector económico que tuvo los mayores costos y gastos de nómina para cada año disponible:\n")
-        
-    tabla1=[]
-    for data in lt.iterator(nombres):
-        linea=[]
-        for llave in columnas1:
-            linea.append(data[llave])
-        tabla1.append(linea)
+    anio = input("Introduzca un año específico ")
+    respuesta = controller.req_3(control, anio)
+    res0 = filtrar_lista_dics_por(respuesta[0][0],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res0, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
     
-    print(tabulate(tabla1, headers=titulos1, tablefmt="fancy_grid", maxcolwidths=anchos1, stralign="left", numalign="left"))
+    res1 = filtrar_lista_dics_por(respuesta[0][1],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res1, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
     
-    print("\nSubsector económico que tuvo los mayores costos y gastos de nómina para cada año disponible:\n")
+    res2 = filtrar_lista_dics_por(respuesta[0][2],["Código actividad económica", "Nombre actividad económica","Nombre sector económico",
+                 "Código subsector económico", 'Nombre subsector económico', "Total ingresos netos", "Total costos y gastos",
+                 "Total saldo a pagar", "Total saldo a favor"] )
+    print(tabulate(res2, headers="keys", tablefmt= "grid", maxcolwidths=15, maxheadercolwidths=15))
     
-    #tablas por año
-    columnas2=[ "Código actividad económica", "Nombre actividad económica", "Costos y gastos nómina", "Total ingresos netos","Total costos y gastos", "Total saldo a pagar", "Total saldo a favor"]
-    titulos2=["Código\nactividad\neconómica", "Nombre\nactividad\neconómica", "Total\ncostos\ny gastos\nnómina", "Total\ningresos\nnetos", "Total\ncostos\ny gastos", "Total\nsaldo\na pagar" , "Total\nsaldo\na favor" ]
-    anchos2=[2,30,2,2,2,2,2]
-    
-    for fila_anios in lt.iterator(filas_respuesta):
-        tabla = []
-        size=fila_anios["size"]
-        referencia=lt.getElement(fila_anios,1)
-        print ("\nHay " + str(size) + " actividades económicas en "  + str(referencia["info"]["Año"]) + ", en el subsector económico "+ str(referencia["info"]["Código subsector económico"]) +": "+str(referencia["info"]["Nombre subsector económico"])+"\n")
-        for data in lt.iterator(fila_anios):
-            linea=[]
-            for llave in columnas2:
-                if llave== "Código actividad económica":
-                    linea.append(data[llave])
-                else:
-                    linea.append(data["info"][llave])
-            tabla.append(linea)
-        print(tabulate(tabla, headers=titulos2, tablefmt="fancy_grid", maxcolwidths=anchos2, stralign="left", numalign="left" ))
-    
-    print('\nTiempo de ejecución:',tiempo,'ms\n')
+    print(respuesta[1])
 
 def print_req_5(control):
     """
